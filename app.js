@@ -1,47 +1,21 @@
 const express = require('express');
 const { readFileSync, writeFile } = require('fs');
+const morgan = require('morgan');
+
+const tourRouter = require('./Routes/tourRoutes');
+const userRouter = require('./Routes/userRoutes');
 
 const app = express();
 
-//middlewares
-app.use(express.json());
+//Middlewares
+app.use(morgan('dev'));
+app.use(express.json()); //parsing json from the body
 
 const PORT = 5000;
 
-const tours = JSON.parse(
-  readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
-);
-
-//getting all the tours - GET
-app.get('/api/v1/tours', (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    results: tours.length,
-    data: {
-      tours,
-    },
-  });
-});
-
-//creating a tour - POST
-app.post('/api/v1/tours', (req, res) => {
-  const newId = tours[tours.length - 1].id + 1;
-  const newTour = Object.assign({ id: newId }, req.body);
-
-  tours.push(newTour);
-  writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
-    JSON.stringify(tours),
-    (err) => {
-      res.status(201).json({
-        status: 'success',
-        data: {
-          tour: newTour,
-        },
-      });
-    }
-  );
-});
+//ROUTING
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
 
 app.listen(PORT, () => {
   console.log(`App is running on port: ${PORT}`);
