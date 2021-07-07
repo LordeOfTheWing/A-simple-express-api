@@ -3,6 +3,8 @@ const express = require('express');
 const tourController = require('./../Controllers/tourController');
 
 const router = express.Router();
+//Middleware
+router.param('id', tourController.checkID);
 
 router
   .route('/')

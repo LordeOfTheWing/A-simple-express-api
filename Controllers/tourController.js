@@ -4,6 +4,20 @@ const tours = JSON.parse(
   readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 
+//Middleware
+exports.checkID = (req, res, next, val) => {
+  console.log(`Tour id is: ${val}`);
+
+  if (req.params.id * 1 > tours.length) {
+    //If tour id does not exist then return the folllowing
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+  next();
+};
+
 exports.getAllTours = (req, res) => {
   res.status(200).json({
     status: 'success',
@@ -15,15 +29,9 @@ exports.getAllTours = (req, res) => {
 };
 
 exports.getATour = (req, res) => {
+  console.log(req.params);
   const id = req.params.id * 1; //converting string to a number
   const tour = tours.find((el) => el.id === id);
-
-  if (!tour) {
-    return res.status(404).json({
-      status: 'Fail',
-      message: 'Invalid Id',
-    });
-  }
 
   res.status(200).json({
     status: 'success',
@@ -53,14 +61,6 @@ exports.createATour = (req, res) => {
 };
 
 exports.updateATour = (req, res) => {
-  if (req.params.id * 1 > tours.length) {
-    //If tour id does not exist then return the folllowing
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-
   res.status(200).json({
     status: 'success',
     data: {
@@ -70,14 +70,6 @@ exports.updateATour = (req, res) => {
 };
 
 exports.deleteATour = (req, res) => {
-  if (req.params.id * 1 > tours.length) {
-    //If tour id does not exist then return the folllowing
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-
   res.status(204).json({
     status: 'success',
     data: null,
