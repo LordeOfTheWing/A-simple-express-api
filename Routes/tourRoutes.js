@@ -1,6 +1,7 @@
+/* eslint-disable prettier/prettier */
 const express = require('express');
 
-const tourController = require('./../Controllers/tourController');
+const tourController = require("../Controllers/tourController");
 
 const router = express.Router();
 //Middleware
